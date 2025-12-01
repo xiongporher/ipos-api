@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec ts-node src/index.ts",
+    "prebuild": "prisma generate",
     "build": "tsc",
     "start": "nodemon dist/index.js",
     "db:push": "npx prisma db push",
