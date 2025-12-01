@@ -150,7 +150,7 @@ model Product {
   unitId      String
   brandId     String
   categoryId  String
-  expiryDate  DateTime? @default("2025-12-31T00:00:00.000Z")
+  expiryDate  DateTime?
   unit      Unit     @relation(fields: [unitId], references: [id])
   brand     Brand    @relation(fields: [brandId], references: [id])
   category  Category @relation(fields: [categoryId], references: [id])
