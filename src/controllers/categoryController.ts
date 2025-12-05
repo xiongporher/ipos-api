@@ -5,7 +5,7 @@ export const createCategory = async (req: Request, res: Response) => {
   try {
     // Get the data
     const { name, slug } = req.body;
-    // Check if shop already exists
+    // Check if category already exists
     const existingCategory = await db.category.findUnique({
       where: { slug },
     });
@@ -23,7 +23,7 @@ export const createCategory = async (req: Request, res: Response) => {
         slug,
       },
     });
-    // Return the Create Shop
+    // Return the Create category
     return res.status(201).json({
       message: "Category created successfully",
       data: newCategory,

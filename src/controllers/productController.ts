@@ -21,6 +21,8 @@ export const createProduct = async (req: Request, res: Response) => {
       brandId,
       categoryId,
       expiryDate,
+      wholesalePrice,
+      shopId,
     } = req.body;
 
     // ກວດສອບ required fields
@@ -33,7 +35,9 @@ export const createProduct = async (req: Request, res: Response) => {
       !unitId ||
       !brandId ||
       !categoryId ||
-      !expiryDate
+      !expiryDate ||
+      !wholesalePrice ||
+      !shopId
     ) {
       return res.status(400).json({
         message: "Missing required fields",
@@ -47,6 +51,7 @@ export const createProduct = async (req: Request, res: Response) => {
       existingBrand,
       existingCategory,
       existingSupplier,
+      existingShop,
       existingProductBySlug,
       existingProductBySku,
       existingProductByCode,
@@ -56,6 +61,7 @@ export const createProduct = async (req: Request, res: Response) => {
       db.brand.findUnique({ where: { id: brandId } }),
       db.category.findUnique({ where: { id: categoryId } }),
       db.supplier.findUnique({ where: { id: supplierId } }),
+      db.shop.findUnique({ where: { id: shopId } }),
       db.product.findUnique({ where: { slug } }),
       db.product.findUnique({ where: { sku } }),
       db.product.findUnique({ where: { productCode } }),
@@ -89,6 +95,12 @@ export const createProduct = async (req: Request, res: Response) => {
     if (!existingSupplier) {
       return res.status(404).json({
         message: "Supplier not found",
+        data: null,
+      });
+    }
+    if (!existingShop) {
+      return res.status(404).json({
+        message: "Shop not found",
         data: null,
       });
     }
@@ -143,6 +155,8 @@ export const createProduct = async (req: Request, res: Response) => {
         brandId,
         categoryId,
         expiryDate: new Date(expiryDate),
+        wholesalePrice: parseInt(wholesalePrice),
+        shopId,
       },
       include: {
         unit: true,
@@ -209,6 +223,7 @@ export const getProductById = async (req: Request, res: Response) => {
         brand: true,
         category: true,
         supplier: true,
+        shop: true,
       },
     });
 
@@ -253,6 +268,8 @@ export const updateProductById = async (req: Request, res: Response) => {
       brandId,
       categoryId,
       expiryDate,
+      wholesalePrice,
+      shopId,
     } = req.body;
 
     // ກວດສອບວ່າມີຂໍ້ມູນທີ່ຈະອັບເດດບໍ່
@@ -274,7 +291,9 @@ export const updateProductById = async (req: Request, res: Response) => {
       !unitId &&
       !brandId &&
       !categoryId &&
-      !expiryDate
+      !expiryDate &&
+      !wholesalePrice &&
+      !shopId
     ) {
       return res.status(400).json({
         message: "No fields to update",
@@ -313,7 +332,7 @@ export const updateProductById = async (req: Request, res: Response) => {
       const existingProductBySku = await db.product.findUnique({
         where: { sku },
       });
-      
+
       if (existingProductBySku) {
         return res.status(409).json({
           message: "Product with this SKU already exists",
@@ -324,10 +343,10 @@ export const updateProductById = async (req: Request, res: Response) => {
 
     // ກວດສອບ productCode ຊ້ຳ (ຖ້າມີການປ່ຽນ productCode)
     if (productCode && productCode !== existingProduct.productCode) {
-      const existingProductByCode = await db.product.findUnique({ 
-        where: { productCode } 
+      const existingProductByCode = await db.product.findUnique({
+        where: { productCode },
       });
-      
+
       if (existingProductByCode) {
         return res.status(409).json({
           message: "Product with this product code already exists",
@@ -338,8 +357,8 @@ export const updateProductById = async (req: Request, res: Response) => {
 
     // ກວດສອບ barCode ຊ້ຳ (ຖ້າມີການປ່ຽນ barCode)
     if (barCode && barCode !== existingProduct.barCode) {
-      const existingProductByBarCode = await db.product.findUnique({ 
-        where: { barCode } 
+      const existingProductByBarCode = await db.product.findUnique({
+        where: { barCode },
       });
 
       if (existingProductByBarCode) {
@@ -374,12 +393,15 @@ export const updateProductById = async (req: Request, res: Response) => {
         ...(brandId && { brandId }),
         ...(categoryId && { categoryId }),
         ...(expiryDate && { expiryDate: new Date(expiryDate) }),
+        ...(wholesalePrice && {  wholesalePrice: parseInt(wholesalePrice)}),
+        ...(shopId && { shopId }),
       },
       include: {
         unit: true,
         brand: true,
         category: true,
         supplier: true,
+        shop: true,
       },
     });
 

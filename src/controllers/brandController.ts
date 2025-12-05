@@ -5,7 +5,7 @@ export const createBrand = async (req: Request, res: Response) => {
   try {
     // Get the data
     const { name, slug } = req.body;
-    // Check if shop already exists
+    // Check if brand already exists
     const existingBrand = await db.brand.findUnique({
       where: { slug },
     });
@@ -23,7 +23,7 @@ export const createBrand = async (req: Request, res: Response) => {
         slug,
       },
     });
-    // Return the Create Shop
+    // Return the Create brand
     return res.status(201).json({
       message: "Brand created successfully",
       data: newBrand,

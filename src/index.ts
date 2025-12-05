@@ -9,6 +9,8 @@ import unitRouter from "./routes/unitRoutes";
 import brandRouter from "./routes/brandRoutes";
 import categoryRouter from "./routes/categoryRoutes";
 import productRouter from "./routes/productRoutes";
+import saleRouter from "./routes/saleRoutes";
+import saleItemRouter from "./routes/saleItemRoutes";
 require("dotenv").config();
 
 const app = express();
@@ -37,3 +39,5 @@ app.use("/api/v1", unitRouter);
 app.use("/api/v1", brandRouter);
 app.use("/api/v1", categoryRouter);
 app.use("/api/v1", productRouter);
+app.use("/api/v1", saleRouter);
+app.use("/api/v1", saleItemRouter);

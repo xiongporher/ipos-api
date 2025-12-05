@@ -76,7 +76,7 @@ export const createCustomer = async (req: Request, res: Response) => {
         maxCreditDays,
         taxPin,
         email,
-        dob,
+        dob: new Date("1995-03-15"),
         NIN,
       },
     });
